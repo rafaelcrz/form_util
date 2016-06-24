@@ -35,26 +35,25 @@ public class FormUtil {
      * - Existe pelo menos um campo vazio
      */
     public static boolean isFull(String mensagem, JTextComponent... inputs) {
-        boolean status = true; //full status
-        JTextComponent in = null; // input 'class father'
-        for (JTextComponent inputVoid : inputs) { //all parameter's inputs
-            if (inputVoid.getText().equalsIgnoreCase(CLEAN) || inputVoid.getText().equalsIgnoreCase(mensagem)) {//the input is void
+        boolean status = true; //estado do campo
+        JTextComponent in = null; // 'classe pai' dos JTextField e JTextArea
+        for (JTextComponent inputVoid : inputs) { //todos campos vazios
+            if (inputVoid.getText().equalsIgnoreCase(CLEAN) || inputVoid.getText().equalsIgnoreCase(mensagem)) {//caso campo esteja vazio
                 inputVoid.setBackground(Color.red);
                 inputVoid.setText(mensagem);
-                //we need convert the JTextComponent to JtextField or JtexArea
-                //for use the MouseListener
+                //Precisou fazer um casting, porque o método não é aceito para o JTextComponent
                 if (inputVoid instanceof JTextField) {
                     in = (JTextField) inputVoid; 
                 } else if (inputVoid instanceof JTextArea) {
                     in = (JTextArea) inputVoid;
                 }
-                //'mouse click'
+                //quando clica no campo vazio
                 in.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(java.awt.event.MouseEvent evt) {
-                        //The input void there is a message, like 'this input is required'
-                        //when click in this input, the message is cleared and this backgroud
-                        //return to orignal
+                        //O campo vazio possui uma mensagem de obrigatoriedade, ex "campo obritario"
+                        //quando clica nesse campo, a mensagem é apagada e a cor de fundo volta
+                        //ao original
                         inputVoid.setBackground(Color.WHITE);
                         inputVoid.setText(CLEAN);
                     }
