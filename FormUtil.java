@@ -7,8 +7,15 @@
 package form_util;
 
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseListener;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.event.MouseInputListener;
 import javax.swing.text.JTextComponent;
 
 /**
@@ -21,20 +28,41 @@ public class FormUtil {
     /**
      * Verifica se os campos de texto passados por parametros estão preenchidos
      *
-     * @param mensagem Mensagem que será exibida no campo vazio alertando o usuário
+     * @param mensagem Mensagem que será exibida no campo vazio alertando o
+     * usuário
      * @param inputs campos de texto JTextField
-     * @return <b>true</b> - Todos os campos estão preenchidos <br> <b>false</b> - Existe pelo menos um campo vazio
+     * @return <b>true</b> - Todos os campos estão preenchidos <br> <b>false</b>
+     * - Existe pelo menos um campo vazio
      */
     public static boolean isFull(String mensagem, JTextComponent... inputs) {
-        boolean status = true;
-        for (JTextComponent input : inputs) {
-            if (input.getText().equalsIgnoreCase(CLEAN) || input.getText().equalsIgnoreCase(mensagem)) {
-                input.setBackground(Color.red);
-                input.setText(mensagem);
+        boolean status = true; //full status
+        JTextComponent in = null; // input 'class father'
+        for (JTextComponent inputVoid : inputs) { //all parameter's inputs
+            if (inputVoid.getText().equalsIgnoreCase(CLEAN) || inputVoid.getText().equalsIgnoreCase(mensagem)) {//the input is void
+                inputVoid.setBackground(Color.red);
+                inputVoid.setText(mensagem);
+                //we need convert the JTextComponent to JtextField or JtexArea
+                //for use the MouseListener
+                if (inputVoid instanceof JTextField) {
+                    in = (JTextField) inputVoid; 
+                } else if (inputVoid instanceof JTextArea) {
+                    in = (JTextArea) inputVoid;
+                }
+                //'mouse click'
+                in.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(java.awt.event.MouseEvent evt) {
+                        //The input void there is a message, like 'this input is required'
+                        //when click in this input, the message is cleared and this backgroud
+                        //return to orignal
+                        inputVoid.setBackground(Color.WHITE);
+                        inputVoid.setText(CLEAN);
+                    }
+                });
                 status = false;
             } else {
-                input.setBackground(Color.WHITE);
-                input.setText(input.getText());
+                inputVoid.setBackground(Color.WHITE);
+                inputVoid.setText(inputVoid.getText());
             }
         }
         return status;
@@ -57,7 +85,7 @@ public class FormUtil {
     /**
      * Habilita todos os componentes (JComponent) passados por parâmetro
      *
-     * @param components componentes JComponent 
+     * @param components componentes JComponent
      */
     public static void enableComponents(JComponent... components) {
         for (JComponent component : components) {
@@ -82,6 +110,7 @@ public class FormUtil {
 
     /**
      * Exibe uma mensagem de texto (JOptionPane)
+     *
      * @param txt mensagem de texto
      */
     public static void msg(String txt) {
