@@ -1,4 +1,4 @@
-package formutil;
+package form_util;
 
 /**
  * @author Rafael Felipe
